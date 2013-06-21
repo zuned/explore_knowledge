@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="service_providers_report" language="groovy" pageWidth="1120" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="1080" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
+	<subDataset name="Total Count">
+		<queryString>
+			<![CDATA[SELECT FOUND_ROWS() total_count]]>
+		</queryString>
+		<field name="total_count" class="java.lang.Long"/>
+	</subDataset>
+	<parameter name="limitStart" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fetchSize" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[10]]></defaultValueExpression>
+	</parameter>
+	<parameter name="startDate" class="java.lang.String"/>
+	<parameter name="endDate" class="java.lang.String"/>
+	<parameter name="serviceProviderId" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT SQL_CALC_FOUND_ROWS SP.ID AS SERVICE_PROVIDER_ID ,
+	CONCAT(SP.FIRST_NAME,' ',SP.LAST_NAME) AS SERVICE_PROVIDER_NAME,
+	SP.MEMBER_TYPE AS  MEMBERSHIPTYPE,
+	SP.DATE_OF_REGISTRATION AS DATE_OF_REGISTRATION,
+	GROUP_CONCAT(SA.POST_CODE) AS POST_CODE,
+	S.SERVICE_NAME SERVICE_NAME,
+(
+SELECT
+	COUNT(ID)
+FROM service_provider_tracking SPT
+	WHERE
+		SPT.SERVICE_PROVIDER_ID = $P{serviceProviderId}
+		AND ($P{startDate} IS NULL OR SPT.CREATED_DATE >= STR_TO_DATE(CONCAT($P{startDate},'00:00:00'),'%m/%d/%Y %H:%i:%s'))
+		AND ($P{endDate} IS NULL OR SPT.CREATED_DATE <= STR_TO_DATE(CONCAT($P{endDate},'23:59:59'),'%m/%d/%Y %H:%i:%s'))
+ ) AS TOTAL_HIT_RECEIVED,
+(
+SELECT
+	COUNT(ID)
+FROM audit_mail_log AML
+	WHERE
+		AML.SERVICE_PROVIDER_ID = $P{serviceProviderId}
+		AND ($P{startDate} IS NULL OR AML.CREATED_DATE >= STR_TO_DATE(CONCAT($P{startDate},'00:00:00'),'%m/%d/%Y %H:%i:%s'))
+		AND ($P{endDate} IS NULL OR AML.CREATED_DATE <= STR_TO_DATE(CONCAT($P{endDate},'23:59:59'),'%m/%d/%Y %H:%i:%s'))
+) AS TATAL_EMAIL_RECEIVED
+
+FROM
+	service_provider SP
+	INNER JOIN services S
+	ON SP.SERVICE_ID = S.ID
+	INNER JOIN service_area_covered SAC
+	ON SP.ID = SAC.SERVICE_PROVIDER_ID
+	INNER JOIN service_area SA
+	ON SAC.SERVICE_AREA_ID = SA.ID
+WHERE
+	SP.ID = $P{serviceProviderId}]]>
+	</queryString>
+	<field name="SERVICE_PROVIDER_ID" class="java.lang.Long"/>
+	<field name="SERVICE_PROVIDER_NAME" class="java.lang.String"/>
+	<field name="MEMBERSHIPTYPE" class="java.lang.String"/>
+	<field name="DATE_OF_REGISTRATION" class="java.sql.Date"/>
+	<field name="POST_CODE" class="java.lang.String"/>
+	<field name="SERVICE_NAME" class="java.lang.String"/>
+	<field name="TOTAL_HIT_RECEIVED" class="java.lang.Long"/>
+	<field name="TATAL_EMAIL_RECEIVED" class="java.lang.Long"/>
+	<title>
+		<band height="60">
+			<staticText>
+				<reportElement x="0" y="0" width="80" height="20"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[Report Name:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="20" width="80" height="20"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[Report Date:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="40" width="80" height="20"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[Total Records:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="0" width="173" height="20"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[Service Provider Report]]></text>
+			</staticText>
+			<textField evaluationTime="Report">
+				<reportElement x="80" y="40" width="173" height="20"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy.MM.dd &apos;at&apos; HH:mm:ss z">
+				<reportElement x="80" y="20" width="173" height="20"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="253" y="0" width="769" height="60"/>
+			</rectangle>
+			<componentElement>
+				<reportElement x="370" y="0" width="160" height="20"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="Total Count"/>
+					<jr:listContents height="20" width="160">
+						<textField>
+							<reportElement x="0" y="0" width="160" height="20"/>
+							<textElement verticalAlignment="Middle"/>
+							<textFieldExpression><![CDATA[$F{total_count}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<staticText>
+				<reportElement x="253" y="0" width="117" height="20"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[All Records:]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="25" splitType="Stretch">
+			<staticText>
+				<reportElement key="Service Provider Id" x="0" y="0" width="113" height="25"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Service Provider Id]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="Service Provider Name" x="112" y="0" width="141" height="25"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Service Provider Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="Membership Type" x="253" y="0" width="105" height="25"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Membership Type]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="Date Of Registration" x="358" y="0" width="123" height="25"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Date Of Registration]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="Total Email Received" x="880" y="0" width="142" height="25"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Email Received]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="Post Code" x="481" y="0" width="132" height="25"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Post Code]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="Service Name" x="613" y="0" width="107" height="25"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Service Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="Total Hits Received" x="720" y="0" width="160" height="25"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Hits Received]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement key="Service Provider Id" x="0" y="0" width="113" height="20"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{SERVICE_PROVIDER_ID}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement key="Service Provider Name" x="112" y="0" width="141" height="20"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{SERVICE_PROVIDER_NAME}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement key="Membership Type" x="253" y="0" width="105" height="20"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{MEMBERSHIPTYPE}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement key="Date Of Registration" x="358" y="0" width="123" height="20"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{DATE_OF_REGISTRATION}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement key="Total Email Received" x="880" y="0" width="142" height="20"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{TATAL_EMAIL_RECEIVED}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement key="Post Code" x="481" y="0" width="132" height="20"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{POST_CODE}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement key="Service Name" x="613" y="0" width="107" height="20"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{SERVICE_NAME}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement key="Total Hits Received" x="720" y="0" width="160" height="20"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{TOTAL_HIT_RECEIVED}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

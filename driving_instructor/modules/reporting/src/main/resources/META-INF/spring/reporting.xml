@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2009 - 2012 hCentive Inc. All rights reserved.
+
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd 
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+	
+<!-- 	<bean id="jasperReportService" class="com.zuni.reporting.service.JasperReportService">
+		<property name="reportLoc" value="${reporting.reportLoc}" />
+		<property name="reportPath" value="${reporting.reportPath}" />
+		<property name="reportDownloadUrl" value="${reporting.reportDownloadUrl}" />
+		<property name="loginUser" value="${reporting.loginUser}" />
+		<property name="loginPassword" value="${reporting.loginPassword}" />
+		<property name="loginUrl" value="${reporting.loginUrl}" />
+		<property name="loginPort" value="${reporting.loginPort}" />
+		<property name="restTemplate" ref="restTemplate"/>
+		<property name="outputTypeMap"> 
+			<map>
+               <entry key="HTML" value="text/html"/>
+               <entry key="PDF" value="application/pdf"/>
+               <entry key="XLS" value="application/vnd.ms-excel"/>
+          	</map>
+        </property>
+        <property name="sdf" ref="sdf"/>
+	</bean> -->
+	<bean id="reportUtils" class="com.zuni.reporting.utils.ReportUtils">
+	<property name="outputTypeMap"> 
+			<map>
+               <entry key="HTML" value="text/html"/>
+               <entry key="PDF" value="application/pdf"/>
+               <entry key="XLS" value="application/vnd.ms-excel"/>
+          	</map>
+        </property>
+        <property name="sdf" ref="sdf"/>
+	</bean>
+	
+	
+	<bean id="jasperLibraryService" class="com.zuni.reporting.service.JasperLibraryService">
+	<property name="reportPath" value="${reporting.reportPath}"></property>
+	<property name="dataSource" ref="dataSource"></property>
+	<property name="reportUtils" ref="reportUtils"></property>
+	</bean>
+	<!-- 
+	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="${jdbc.datasource}" />
+		<property name="resourceRef" value="true" />
+	</bean> -->
+	
+	<bean id="sdf" class="java.text.SimpleDateFormat">
+	<constructor-arg value="_MMddyyyyy"/>
+	</bean>
+	
+	<bean id="reportServiceContext" class="com.zuni.reporting.utils.ReportServiceContext">
+		<property name="service" ref="jasperLibraryService"/>
+	</bean>
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+	</bean>
+	</beans>
