@@ -52,10 +52,9 @@
 									<th></th>
 								</tr>
 							</thead>
-		
 						</table>
-					</div>
                 </div>
+              </div>
               </div>
             </fieldset>
           </div>

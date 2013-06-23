@@ -510,6 +510,11 @@ table td[class*="span"],table th[class*="span"],.row-fluid table td[class*="span
 .icon-hsa.disabled{background-position:-50px -125px;}
 .icon-deductible.disabled{background-position:-125px -125px;}
 .icon-view{background-position:-275px -25px;width:20px;height:17px;}
+.sorting_asc {background: url("../images/sort_asc.png") no-repeat scroll right center transparent;}
+.sorting_desc {background: url("../images/sort_desc.png") no-repeat scroll right center transparent;}
+.sorting {background: url("../images/sort_both.png") no-repeat scroll right center transparent;}
+.sorting_asc_disabled {background: url("../images/sort_asc_disabled.png") no-repeat scroll right center transparent;}
+.sorting_desc_disabled {background: url("../images/sort_desc_disabled.png") no-repeat scroll right center transparent;}
 .icon-sorting-up{background-position:-75px -50px;width:8px;height:8px;}
 .icon-sorting-down{background-position:-50px -50px;width:8px;height:8px;}
 .icon-steps{background-position:0 -300px;width:110px;height:110px;}

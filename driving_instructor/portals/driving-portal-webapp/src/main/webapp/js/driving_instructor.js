@@ -544,6 +544,16 @@ var DataTableUtils =
 						"sInfo":"<span>_START_ to _END_</span><span class='of'>of</span><span> _TOTAL_</span>",
 						"sInfoEmpty": "<span>0 to 0 </span><span>of</span><span> 0 </span>"
 					},
+					"fnDrawCallback" : function(
+							oSettings) {
+						$("#waiting_a").hide();
+						$(".dataTables_filter").hide();
+						$(".dataTables_length").hide();
+						$("#"+ tableId +"_info").addClass("pull-left");
+						$("#" +tableId+ "_paginate").addClass("pull-right clr");
+						$(".paginate_button").addClass("btn btn-secondry btn-mini marginR5");
+						$(".pagination-mini").hide();
+					},
 			        "fnServerParams": function(aoData)
 			        {
 						var serializedForm = searchForm.formParams(false),
@@ -556,7 +566,7 @@ var DataTableUtils =
 							}
 						}
 			        },
-					"sDom":"rtlip"
+			        "sDom":"tlip"
 			};
 			$.extend($.fn.dataTableExt.oStdClasses,{
 				"sPagePrevDisabled":"col1 previous disabled pull-left",
