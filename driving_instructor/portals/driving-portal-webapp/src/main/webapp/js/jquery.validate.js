@@ -1,6 +1,3 @@
-/*
- * Copyright (c) 2009 - 2012 hCentive Inc. All rights reserved.
- */
 (function($) {
 
 $.extend($.fn, {

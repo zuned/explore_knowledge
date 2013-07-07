@@ -8,7 +8,7 @@ public class JasperReportTest {
 
 	public static void main(String args[]) {
 		JasperReportService jService = new JasperReportService();
-		jService.setCredentials("anurag", "hcentive", "localhost", 8080);
+		jService.setCredentials("zuned", "TestCompany", "localhost", 8080);
 		Report report = new JasperReport();
 		report.setReportName("paginatedReport");
 		report.setPageNumber(1);

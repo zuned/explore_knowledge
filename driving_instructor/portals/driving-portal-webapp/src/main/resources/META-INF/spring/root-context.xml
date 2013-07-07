@@ -35,9 +35,10 @@
     -->
     <authentication-manager>
         <authentication-provider>
-            <password-encoder hash="md5"/>
+           <!--  <password-encoder hash="md5"/> -->
             <user-service>
-                <user name="peter" password="22b5c9accc6e1ba628cedc63a72d57f8" authorities="ROLE_ADMIN" />
+                <user name="${admin.username}" password="${admin.password}" authorities="ROLE_ADMIN" />
+                <!-- <user name="peter" password="22b5c9accc6e1ba628cedc63a72d57f8" authorities="ROLE_ADMIN" /> -->
             </user-service>
         </authentication-provider>
     </authentication-manager>

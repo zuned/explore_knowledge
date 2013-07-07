@@ -1,7 +1,4 @@
 /*
- * Copyright (c) 2009 - 2012 hCentive Inc. All rights reserved.
- */
-/*
  * When considering jsLint, we need to allow eval() as it it is used for reading cookies
  */
 /*jslint evil: true, undef: true, browser: true */
